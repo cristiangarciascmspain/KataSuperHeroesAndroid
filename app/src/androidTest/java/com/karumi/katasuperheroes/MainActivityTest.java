@@ -40,12 +40,16 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.karumi.katasuperheroes.matchers.RecyclerViewItemsCountMatcher.recyclerViewHasItemCount;
 import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class) @LargeTest public class MainActivityTest {
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class MainActivityTest {
 
-  @Rule public DaggerMockRule<MainComponent> daggerRule =
+  @Rule
+  public DaggerMockRule<MainComponent> daggerRule =
       new DaggerMockRule<>(MainComponent.class, new MainModule()).set(
           new DaggerMockRule.ComponentSetter<MainComponent>() {
-            @Override public void setComponent(MainComponent component) {
+            @Override
+            public void setComponent(MainComponent component) {
               SuperHeroesApplication app =
                   (SuperHeroesApplication) InstrumentationRegistry.getInstrumentation()
                       .getTargetContext()
@@ -54,12 +58,15 @@ import static org.mockito.Mockito.when;
             }
           });
 
-  @Rule public IntentsTestRule<MainActivity> activityRule =
+  @Rule
+  public IntentsTestRule<MainActivity> activityRule =
       new IntentsTestRule<>(MainActivity.class, true, false);
 
-  @Mock SuperHeroesRepository repository;
+  @Mock
+  SuperHeroesRepository repository;
 
-  @Test public void showsEmptyCaseIfThereAreNoSuperHeroes() {
+  @Test
+  public void showsEmptyCaseIfThereAreNoSuperHeroes() {
     givenThereAreNoSuperHeroes();
 
     startActivity();
@@ -67,7 +74,8 @@ import static org.mockito.Mockito.when;
     onView(withText("¯\\_(ツ)_/¯")).check(matches(isDisplayed()));
   }
 
-  @Test public void showsAHeroIfThereAreOneSuperHero() {
+  @Test
+  public void showsAHeroIfThereAreOneSuperHero() {
     givenThereAreOneSuperHero();
 
     startActivity();
@@ -75,7 +83,8 @@ import static org.mockito.Mockito.when;
     onView(withText("one hero")).check(matches(isDisplayed()));
   }
 
-  @Test public void haveOneItemIfThereAreOneSuperHero() {
+  @Test
+  public void haveOneItemIfThereAreOneSuperHero() {
     givenThereAreOneSuperHero();
 
     startActivity();
@@ -88,9 +97,10 @@ import static org.mockito.Mockito.when;
   }
 
   private void givenThereAreOneSuperHero() {
-    when(repository.getAll())
-        .thenReturn(Collections.singletonList(new SuperHero("one hero",null,true,"")));
+    when(repository.getAll()).thenReturn(
+        Collections.singletonList(new SuperHero("one hero", null, true, "")));
   }
+
   private MainActivity startActivity() {
     return activityRule.launchActivity(null);
   }
