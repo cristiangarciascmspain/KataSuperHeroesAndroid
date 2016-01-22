@@ -26,7 +26,9 @@ import com.karumi.katasuperheroes.model.SuperHero;
 import com.karumi.katasuperheroes.model.SuperHeroesRepository;
 import com.karumi.katasuperheroes.ui.view.MainActivity;
 import it.cosenonjaviste.daggermock.DaggerMockRule;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,29 +78,50 @@ public class MainActivityTest {
 
   @Test
   public void showsAHeroIfThereAreOneSuperHero() {
-    givenThereAreOneSuperHero();
+    givenThereAreNSuperHeroes(1);
 
     startActivity();
 
-    onView(withText("one hero")).check(matches(isDisplayed()));
+    onView(withText("hero 1")).check(matches(isDisplayed()));
   }
 
   @Test
   public void haveOneItemIfThereAreOneSuperHero() {
-    givenThereAreOneSuperHero();
+    givenThereAreNSuperHeroes(1);
 
     startActivity();
 
     onView(withId(R.id.recycler_view)).check(matches(recyclerViewHasItemCount(1)));
   }
 
+  @Test
+  public void haveTwentyItemIfThereAreTwentySuperHeroes() {
+    givenThereAreNSuperHeroes(20);
+
+    startActivity();
+
+    onView(withId(R.id.recycler_view)).check(matches(recyclerViewHasItemCount(20)));
+  }
+
   private void givenThereAreNoSuperHeroes() {
     when(repository.getAll()).thenReturn(Collections.<SuperHero>emptyList());
   }
 
-  private void givenThereAreOneSuperHero() {
-    when(repository.getAll()).thenReturn(
-        Collections.singletonList(new SuperHero("one hero", null, true, "")));
+  private void givenThereAreNSuperHeroes(int nSuperHeroes) {
+    when(repository.getAll()).thenReturn(createNSuperHeroList(nSuperHeroes));
+  }
+
+  private List<SuperHero> createNSuperHeroList(int listSize) {
+    List<SuperHero> list = new ArrayList<>();
+    for (int i = 1; i <= listSize; i++) {
+      list.add(createSuperHero(i));
+    }
+    return list;
+  }
+
+  private SuperHero createSuperHero(int heroId) {
+    String heroName = "hero " + String.valueOf(heroId);
+    return new SuperHero(heroName, null, true, "");
   }
 
   private MainActivity startActivity() {
