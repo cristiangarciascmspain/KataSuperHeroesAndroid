@@ -35,7 +35,9 @@ import org.mockito.Mock;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.karumi.katasuperheroes.matchers.RecyclerViewItemsCountMatcher.recyclerViewHasItemCount;
 import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class) @LargeTest public class MainActivityTest {
@@ -65,10 +67,30 @@ import static org.mockito.Mockito.when;
     onView(withText("¯\\_(ツ)_/¯")).check(matches(isDisplayed()));
   }
 
+  @Test public void showsAHeroIfThereAreOneSuperHero() {
+    givenThereAreOneSuperHero();
+
+    startActivity();
+
+    onView(withText("one hero")).check(matches(isDisplayed()));
+  }
+
+  @Test public void haveOneItemIfThereAreOneSuperHero() {
+    givenThereAreOneSuperHero();
+
+    startActivity();
+
+    onView(withId(R.id.recycler_view)).check(matches(recyclerViewHasItemCount(1)));
+  }
+
   private void givenThereAreNoSuperHeroes() {
     when(repository.getAll()).thenReturn(Collections.<SuperHero>emptyList());
   }
 
+  private void givenThereAreOneSuperHero() {
+    when(repository.getAll())
+        .thenReturn(Collections.singletonList(new SuperHero("one hero",null,true,"")));
+  }
   private MainActivity startActivity() {
     return activityRule.launchActivity(null);
   }
